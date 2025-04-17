@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người dùng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h2, h3 {
+            color: #0275d8;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-control {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #0275d8;
+            border-color: #0275d8;
+        }
+        .btn-default {
+            color: #333;
+            background-color: #fff;
+            border-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h2 th:text="${isNew} ? 'Thêm Người dùng mới' : 'Sửa Người dùng'">Quản lý Người dùng</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <form th:action="@{/db-manager/save}" th:object="${user}" method="post">
+            <input type="hidden" th:field="*{id}" />
+            
+            <div class="form-group">
+                <label for="firstName">Họ:</label>
+                <input type="text" class="form-control" id="firstName" th:field="*{firstName}" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">Tên:</label>
+                <input type="text" class="form-control" id="lastName" th:field="*{lastName}" required />
+            </div>
+            
+            <div class="form-group">
+                <label for="mark">Điểm:</label>
+                <input type="number" class="form-control" id="mark" th:field="*{mark}" min="0" max="10" required />
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a th:href="@{/db-manager}" class="btn btn-default">Hủy</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html> 

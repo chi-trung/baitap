@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .key-value-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .key-column {
+            width: 150px;
+            background-color: #eee;
+            padding: 8px;
+            font-weight: bold;
+        }
+        .value-column {
+            flex-grow: 1;
+            padding: 0;
+        }
+        .value-column input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .action-buttons {
+            margin-top: 15px;
+        }
+        .add-btn {
+            background-color: #0275d8;
+            padding: 5px 20px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .update-btn {
+            background-color: #f0ad4e;
+            padding: 5px 20px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background-color: #d9534f;
+            padding: 5px 20px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th {
+            background-color: #0275d8;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .radio-cell {
+            width: 40px;
+        }
+        h5 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h2>Quản lý người dùng</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <h5>▼ Danh sách người dùng</h5>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Chọn</th>
+                    <th>ID</th>
+                    <th>Họ</th>
+                    <th>Tên</th>
+                    <th>Điểm</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user, status : ${users}">
+                    <td class="radio-cell">
+                        <input type="radio" name="userRadio" class="user-radio" 
+                               th:data-id="${user.id}" 
+                               th:checked="${status.index == 0}">
+                    </td>
+                    <td th:text="${user.id}">ID</td>
+                    <td th:text="${user.firstName}">Họ</td>
+                    <td th:text="${user.lastName}">Tên</td>
+                    <td th:text="${user.mark}">Điểm</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <form id="userForm" method="post">
+            <div class="key-value-row">
+                <div class="key-column">ID</div>
+                <div class="value-column">
+                    <input type="text" id="userId" name="id" readonly>
+                </div>
+            </div>
+            <div class="key-value-row">
+                <div class="key-column">Họ</div>
+                <div class="value-column">
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+            </div>
+            <div class="key-value-row">
+                <div class="key-column">Tên</div>
+                <div class="value-column">
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+            </div>
+            <div class="key-value-row">
+                <div class="key-column">Điểm</div>
+                <div class="value-column">
+                    <input type="number" id="mark" name="mark" min="0" max="10" required>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="add-btn" id="addBtn">Thêm</button>
+                <button type="button" class="update-btn" id="updateBtn">Cập nhật</button>
+                <button type="button" class="delete-btn" id="deleteBtn">Xóa</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý sự kiện chọn người dùng
+            document.querySelectorAll('.user-radio').forEach(function(radio) {
+                radio.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-id');
+                    fetch('/findUser/' + userId)
+                        .then(response => response.json())
+                        .then(user => {
+                            document.getElementById('userId').value = user.id;
+                            document.getElementById('firstName').value = user.firstName;
+                            document.getElementById('lastName').value = user.lastName;
+                            document.getElementById('mark').value = user.mark;
+                        })
+                        .catch(error => console.error('Lỗi:', error));
+                });
+            });
+            
+            // Chọn người dùng đầu tiên nếu có
+            const firstRadio = document.querySelector('.user-radio');
+            if (firstRadio) {
+                firstRadio.click();
+            }
+
+            // Xử lý nút Thêm
+            document.getElementById('addBtn').addEventListener('click', function() {
+                const form = document.getElementById('userForm');
+                // Xóa ID khi thêm mới
+                document.getElementById('userId').value = '';
+                form.action = '/addUser';
+                form.submit();
+            });
+
+            // Xử lý nút Cập nhật
+            document.getElementById('updateBtn').addEventListener('click', function() {
+                const form = document.getElementById('userForm');
+                const userId = document.getElementById('userId').value;
+                
+                if (!userId) {
+                    alert('Vui lòng chọn người dùng để cập nhật!');
+                    return;
+                }
+                
+                form.action = '/updateUser';
+                form.submit();
+            });
+
+            // Xử lý nút Xóa
+            document.getElementById('deleteBtn').addEventListener('click', function() {
+                const userId = document.getElementById('userId').value;
+                
+                if (!userId) {
+                    alert('Vui lòng chọn người dùng để xóa!');
+                    return;
+                }
+                
+                if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                    window.location.href = '/deleteUser/' + userId;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

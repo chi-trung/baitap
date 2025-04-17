@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Cơ sở dữ liệu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #f8f9fa;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h2, h3 {
+            color: #0275d8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th {
+            background-color: #0275d8;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .btn-primary {
+            color: #fff;
+            background-color: #0275d8;
+            border-color: #0275d8;
+        }
+        .btn-success {
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #5cb85c;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-control {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+        }
+        .panel {
+            margin-bottom: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0,0,0,.05);
+        }
+        .panel-heading {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+        .panel-body {
+            padding: 15px;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .nav-tabs {
+            border-bottom: 1px solid #ddd;
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
+        .nav-tabs > li {
+            float: left;
+            margin-bottom: -1px;
+            display: block;
+        }
+        .nav-tabs > li > a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+        }
+        .nav-tabs > li.active > a {
+            color: #555;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+        }
+        .clearfix:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h2>Quản lý Cơ sở dữ liệu</h2>
+        </div>
+    </div>
+
+    <div class="container">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tables-tab">Danh sách Bảng</a></li>
+            <li><a href="#query-tab">Truy vấn SQL</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="tables-tab" class="tab-pane active">
+                <h3>Danh sách Bảng dữ liệu</h3>
+                
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4>Bảng: USERS</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ</th>
+                                    <th>Tên</th>
+                                    <th>Điểm</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="user : ${users}">
+                                    <td th:text="${user.id}">1</td>
+                                    <td th:text="${user.firstName}">Nguyễn</td>
+                                    <td th:text="${user.lastName}">Văn A</td>
+                                    <td th:text="${user.mark}">8</td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" th:href="@{'/db-manager/edit/' + ${user.id}}">Sửa</a>
+                                        <a class="btn btn-danger btn-sm" 
+                                           th:href="@{'/db-manager/delete/' + ${user.id}}"
+                                           onclick="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">Xóa</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                        <a href="/db-manager/new" class="btn btn-success">Thêm mới</a>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h4>Cấu trúc Bảng: USERS</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên cột</th>
+                                    <th>Kiểu dữ liệu</th>
+                                    <th>Không null</th>
+                                    <th>Khóa chính</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ID</td>
+                                    <td>BIGINT</td>
+                                    <td>Yes</td>
+                                    <td>Yes (Auto Increment)</td>
+                                </tr>
+                                <tr>
+                                    <td>FIRST_NAME</td>
+                                    <td>VARCHAR(100)</td>
+                                    <td>Yes</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>LAST_NAME</td>
+                                    <td>VARCHAR(100)</td>
+                                    <td>Yes</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>MARK</td>
+                                    <td>INT</td>
+                                    <td>No</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="query-tab" class="tab-pane">
+                <h3>Truy vấn SQL</h3>
+                <form th:action="@{/db-manager/query}" method="post">
+                    <div class="form-group">
+                        <label for="sqlQuery">Câu lệnh SQL:</label>
+                        <textarea id="sqlQuery" name="sqlQuery" class="form-control" rows="5" placeholder="Nhập câu lệnh SQL (ví dụ: SELECT * FROM USERS)"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Thực thi</button>
+                </form>
+                
+                <div th:if="${queryResult != null}" style="margin-top: 20px;">
+                    <h4>Kết quả truy vấn:</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th th:each="column : ${columns}" th:text="${column}">Cột</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="row : ${queryResult}">
+                                <td th:each="cell : ${row}" th:text="${cell}">Dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Xử lý tab
+        const tabs = document.querySelectorAll('.nav-tabs > li');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Loại bỏ active class từ tất cả tabs và tab panes
+                tabs.forEach(function(t) { t.classList.remove('active'); });
+                tabPanes.forEach(function(p) { p.classList.remove('active'); });
+                
+                // Thêm active class cho tab được click
+                this.classList.add('active');
+                
+                // Lấy target tab pane từ href và hiển thị
+                const target = this.querySelector('a').getAttribute('href').substring(1);
+                document.getElementById(target).classList.add('active');
+            });
+        });
+    });
+    </script>
+</body>
+</html> 

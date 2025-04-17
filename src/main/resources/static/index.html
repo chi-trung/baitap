@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=/users">
+    <title>Chuyển hướng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #0275d8;
+        }
+        .links {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .links a {
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            color: #0275d8;
+            text-decoration: none;
+            border: 1px solid #0275d8;
+            border-radius: 3px;
+        }
+        .links a:hover {
+            background-color: #0275d8;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ứng dụng Quản lý Người dùng</h1>
+        <p>Đang chuyển hướng đến trang quản lý người dùng...</p>
+        
+        <div class="links">
+            <a href="/users">Trang Quản lý Người dùng</a>
+            <a href="/db-manager">Trang Quản lý Cơ sở dữ liệu (Tiếng Việt)</a>
+        </div>
+    </div>
+    
+    <script>
+        // Dừng tự động chuyển hướng để hiển thị menu
+        window.onload = function() {
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function() {
+                history.pushState(null, document.title, location.href);
+            });
+        };
+    </script>
+</body>
+</html> 
