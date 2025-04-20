@@ -18,13 +18,12 @@ public class Th17T4N2025Application {
      * Hiển thị thông tin khi ứng dụng khởi động
      */
     private static void printStartupInfo() {
-        String separator = "==".repeat(30);
+        String separator = "==".repeat(50);
+        System.out.println("\n" + separator);
+        System.out.println("\tỨNG DỤNG QUẢN LÝ NGƯỜI DÙNG ĐÃ KHỜI ĐỘNG THÀNH CÔNG!");
         System.out.println(separator);
-        System.out.println("\tỨNG DỤNG QUẢN LÝ NGƯỜI DÙNG ĐÃ KHỜI ĐỘNG");
-        System.out.println(separator);
-        System.out.println(">> Truy cập: http://localhost:8080 để sử dụng ứng dụng");
-        System.out.println(">> Truy cập: http://localhost:8080/db-manager để quản lý cơ sở dữ liệu");
-        System.out.println(separator);
+        System.out.println("\n✨ Truy cập ứng dụng tại: http://localhost:8080");
+        System.out.println(separator + "\n");
     }
 
 }
