@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Người dùng</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👤</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        
+        .header {
+            background-color: #4e73df;
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1rem 1.25rem;
+            font-weight: 500;
+            color: #4e73df;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table th {
+            background-color: #f8f9fc;
+            color: #4e73df;
+            font-weight: 500;
+        }
+        
+        .form-control:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: #4e73df;
+            border-color: #4e73df;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2e59d9;
+            border-color: #2653d4;
+        }
+        
+        .btn-warning {
+            background-color: #f6c23e;
+            border-color: #f6c23e;
+        }
+        
+        .btn-warning:hover {
+            background-color: #f4b619;
+            border-color: #f4b30d;
+        }
+        
+        .btn-danger {
+            background-color: #e74a3b;
+            border-color: #e74a3b;
+        }
+        
+        .btn-danger:hover {
+            background-color: #e02d1b;
+            border-color: #d52a1a;
+        }
+        
+        .search-box {
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="text-center mb-0">Hệ thống Quản lý Người dùng</h1>
+            <p class="text-center mb-0 mt-2 opacity-75">Quản lý thông tin người dùng một cách hiệu quả</p>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Box -->
+        <div class="card search-box">
+            <div class="card-body">
+                <form th:action="@{/users/search}" method="get" class="row g-3">
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" id="keyword" name="keyword" th:value="${keyword}" placeholder="Nhập tên người dùng cần tìm...">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Tìm kiếm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- User List -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-table me-1"></i>
+                        Danh sách người dùng
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Chọn</th>
+                                        <th>ID</th>
+                                        <th>Họ</th>
+                                        <th>Tên</th>
+                                        <th>Điểm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="user, status : ${users}">
+                                        <td>
+                                            <div class="form-check">
+                                                <input class="form-check-input user-radio" type="radio" name="userRadio" 
+                                                       th:data-id="${user.id}" th:checked="${status.index == 0}">
+                                            </div>
+                                        </td>
+                                        <td th:text="${user.id}">ID</td>
+                                        <td th:text="${user.firstName}">Họ</td>
+                                        <td th:text="${user.lastName}">Tên</td>
+                                        <td th:text="${user.mark}">Điểm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Form -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-edit me-1"></i>
+                        Thông tin người dùng
+                    </div>
+                    <div class="card-body">
+                        <form id="userForm" method="post">
+                            <div class="mb-3">
+                                <label for="userId" class="form-label">ID</label>
+                                <input type="text" class="form-control" id="userId" name="id">
+                            </div>
+                            <div class="mb-3">
+                                <label for="firstName" class="form-label">Họ</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastName" class="form-label">Tên</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mark" class="form-label">Điểm</label>
+                                <input type="number" class="form-control" id="mark" name="mark" min="0" max="10" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                                <button type="button" class="btn btn-primary" id="addBtn">
+                                    <i class="fas fa-plus me-1"></i> Thêm mới
+                                </button>
+                                <button type="button" class="btn btn-warning" id="updateBtn">
+                                    <i class="fas fa-sync me-1"></i> Cập nhật
+                                </button>
+                                <button type="button" class="btn btn-danger" id="deleteBtn">
+                                    <i class="fas fa-trash me-1"></i> Xóa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-4 mt-5">
+        <div class="container">
+            <p class="mb-0">© 2023 Hệ thống Quản lý Người dùng. Phát triển bởi chi-trung.</p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý sự kiện chọn người dùng
+            document.querySelectorAll('.user-radio').forEach(function(radio) {
+                radio.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-id');
+                    fetch('/users/' + userId)
+                        .then(response => response.json())
+                        .then(user => {
+                            document.getElementById('userId').value = user.id;
+                            document.getElementById('firstName').value = user.firstName;
+                            document.getElementById('lastName').value = user.lastName;
+                            document.getElementById('mark').value = user.mark;
+                        })
+                        .catch(error => console.error('Lỗi:', error));
+                });
+            });
+            
+            // Chọn người dùng đầu tiên nếu có
+            const firstRadio = document.querySelector('.user-radio');
+            if (firstRadio) {
+                firstRadio.click();
+            }
+            
+            // Xử lý nút Thêm mới
+            document.getElementById('addBtn').addEventListener('click', function() {
+                const form = document.getElementById('userForm');
+                // Không xóa ID khi thêm mới để người dùng có thể nhập
+                form.action = '/users/add';
+                form.submit();
+            });
+            
+            // Xử lý nút Cập nhật
+            document.getElementById('updateBtn').addEventListener('click', function() {
+                const form = document.getElementById('userForm');
+                const userId = document.getElementById('userId').value;
+                
+                if (!userId) {
+                    alert('Vui lòng chọn người dùng để cập nhật!');
+                    return;
+                }
+                
+                form.action = '/users/update';
+                form.submit();
+            });
+            
+            // Xử lý nút Xóa
+            document.getElementById('deleteBtn').addEventListener('click', function() {
+                const userId = document.getElementById('userId').value;
+                
+                if (!userId) {
+                    alert('Vui lòng chọn người dùng để xóa!');
+                    return;
+                }
+                
+                if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                    window.location.href = '/users/delete/' + userId;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
