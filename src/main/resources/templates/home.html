@@ -102,7 +102,7 @@
 
     <div class="container">
         <h5>▼ Danh sách người dùng</h5>
-        
+
         <table>
             <thead>
                 <tr>
@@ -116,8 +116,8 @@
             <tbody>
                 <tr th:each="user, status : ${users}">
                     <td class="radio-cell">
-                        <input type="radio" name="userRadio" class="user-radio" 
-                               th:data-id="${user.id}" 
+                        <input type="radio" name="userRadio" class="user-radio"
+                               th:data-id="${user.id}"
                                th:checked="${status.index == 0}">
                     </td>
                     <td th:text="${user.id}">ID</td>
@@ -132,7 +132,7 @@
             <div class="key-value-row">
                 <div class="key-column">ID</div>
                 <div class="value-column">
-                    <input type="text" id="userId" name="id" readonly>
+                    <input type="text" id="userId" name="id">
                 </div>
             </div>
             <div class="key-value-row">
@@ -179,7 +179,7 @@
                         .catch(error => console.error('Lỗi:', error));
                 });
             });
-            
+
             // Chọn người dùng đầu tiên nếu có
             const firstRadio = document.querySelector('.user-radio');
             if (firstRadio) {
@@ -189,8 +189,8 @@
             // Xử lý nút Thêm
             document.getElementById('addBtn').addEventListener('click', function() {
                 const form = document.getElementById('userForm');
-                // Xóa ID khi thêm mới
-                document.getElementById('userId').value = '';
+                // Không xóa ID khi thêm mới để người dùng có thể nhập
+                // document.getElementById('userId').value = '';
                 form.action = '/addUser';
                 form.submit();
             });
@@ -199,12 +199,12 @@
             document.getElementById('updateBtn').addEventListener('click', function() {
                 const form = document.getElementById('userForm');
                 const userId = document.getElementById('userId').value;
-                
+
                 if (!userId) {
                     alert('Vui lòng chọn người dùng để cập nhật!');
                     return;
                 }
-                
+
                 form.action = '/updateUser';
                 form.submit();
             });
@@ -212,12 +212,12 @@
             // Xử lý nút Xóa
             document.getElementById('deleteBtn').addEventListener('click', function() {
                 const userId = document.getElementById('userId').value;
-                
+
                 if (!userId) {
                     alert('Vui lòng chọn người dùng để xóa!');
                     return;
                 }
-                
+
                 if (confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
                     window.location.href = '/deleteUser/' + userId;
                 }
@@ -225,4 +225,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

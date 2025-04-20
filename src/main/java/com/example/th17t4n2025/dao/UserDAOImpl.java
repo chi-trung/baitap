@@ -16,7 +16,7 @@ import java.util.List;
 public class UserDAOImpl implements UserDAO {
 
     private final JdbcTemplate jdbcTemplate;
-    
+
     private final RowMapper<User> userRowMapper = (rs, rowNum) -> {
         User user = new User();
         user.setId(rs.getLong("id"));
@@ -33,21 +33,37 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User saveUser(User user) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO users (first_name, last_name, mark) VALUES (?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS
+        // Nếu người dùng đã nhập ID
+        if (user.getId() != null) {
+            jdbcTemplate.update(
+                "INSERT INTO users (id, first_name, last_name, mark) VALUES (?, ?, ?, ?)",
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMark()
             );
-            ps.setString(1, user.getFirstName());
-            ps.setString(2, user.getLastName());
-            ps.setInt(3, user.getMark());
-            return ps;
-        }, keyHolder);
-        
-        user.setId(keyHolder.getKey().longValue());
-        return user;
+            return user;
+        } else {
+            // Nếu không nhập ID, sử dụng auto-increment
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+
+            jdbcTemplate.update(connection -> {
+                PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO users (first_name, last_name, mark) VALUES (?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS
+                );
+                ps.setString(1, user.getFirstName());
+                ps.setString(2, user.getLastName());
+                ps.setInt(3, user.getMark());
+                return ps;
+            }, keyHolder);
+
+            Number key = keyHolder.getKey();
+            if (key != null) {
+                user.setId(key.longValue());
+            }
+            return user;
+        }
     }
 
     @Override
@@ -63,11 +79,11 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public User findUser(Long id) {
         List<User> users = jdbcTemplate.query(
-            "SELECT * FROM users WHERE id = ?", 
-            userRowMapper, 
+            "SELECT * FROM users WHERE id = ?",
+            userRowMapper,
             id
         );
-        
+
         return users.isEmpty() ? null : users.get(0);
     }
 
@@ -80,7 +96,7 @@ public class UserDAOImpl implements UserDAO {
             user.getMark(),
             user.getId()
         );
-        
+
         return user;
     }
-} 
+}
